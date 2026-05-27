@@ -21,7 +21,8 @@ Lab research to baseline legitimate `wevtutil.exe` execution versus potential lo
 - **Tactic:** Defense Evasion
 - **Technique:** Indicator Removal: Clear Windows Event Logs (T1070.001)
 
-<img width="431" height="353" alt="image" src="https://github.com/user-attachments/assets/5a784d1c-921e-4e2e-a9a9-dd549b83edfb" />
+<img width="960" height="540" alt="image" src="https://github.com/user-attachments/assets/3b42db41-2a44-4642-b98a-921f48f8c046" />
+
 <img width="431" height="353" alt="image" src="https://github.com/user-attachments/assets/8efba319-9268-4d0d-a4db-682fcb79afe0" />
 
 
