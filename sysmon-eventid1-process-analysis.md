@@ -21,6 +21,10 @@ Lab research to baseline legitimate `wevtutil.exe` execution versus potential lo
 - **Tactic:** Defense Evasion
 - **Technique:** Indicator Removal: Clear Windows Event Logs (T1070.001)
 
+<img width="431" height="353" alt="image" src="https://github.com/user-attachments/assets/5a784d1c-921e-4e2e-a9a9-dd549b83edfb" />
+<img width="431" height="353" alt="image" src="https://github.com/user-attachments/assets/8efba319-9268-4d0d-a4db-682fcb79afe0" />
+
+
 ## 💡 Detection Opportunities
 **PowerShell Detection Logic:**
 ```powershell
@@ -28,8 +32,6 @@ Lab research to baseline legitimate `wevtutil.exe` execution versus potential lo
 Get-WinEvent -LogName "Microsoft-Windows-Sysmon/Operational" | 
 Where-Object {$_.Message -match "wevtutil.*cl.*Security"}
 
-<img width="960" height="540" alt="image" src="https://github.com/user-attachments/assets/446ddeb4-2169-4940-9807-046497bab49b" />
-<img width="431" height="353" alt="image" src="https://github.com/user-attachments/assets/a91d629d-fe1e-413a-a0fa-ae2c66d9ffd3" />
 
 
 
