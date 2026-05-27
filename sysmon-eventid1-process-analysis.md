@@ -1,82 +1,33 @@
 # Sysmon Event ID 1 Investigation — Process Creation Analysis
 
-## Objective
+## 🎯 Objective
 Analyze Sysmon Event ID 1 logs to understand process creation telemetry and parent-child process relationships.
 
----
+## 📝 Scenario
+Lab research to baseline legitimate `wevtutil.exe` execution versus potential log tampering.
 
-# Environment
+## 📊 Telemetry Observed
+- **Event ID:** 1 (Process Creation)
+- **Image:** `C:\Windows\System32\wevtutil.exe`
+- **Parent Image:** `MsMpEng.exe` (Microsoft Defender)
+- **Integrity Level:** `System`
 
-| Component | Details |
-|---|---|
-| OS | Windows 10 VM |
-| Monitoring Tool | Sysmon |
-| Log Source | Microsoft-Windows-Sysmon/Operational |
-| Event ID | 1 |
-| Investigation Type | Process Creation Analysis |
+## 🔍 Analysis Performed
+1. Captured process creation events via PowerShell.
+2. Verified the parent process (`MsMpEng.exe`) to establish legitimacy.
+3. Examined command-line arguments for patterns matching log-clearing activity.
 
----
+## 🛡️ MITRE ATT&CK Mapping
+- **Tactic:** Defense Evasion
+- **Technique:** Indicator Removal: Clear Windows Event Logs (T1070.001)
 
-# Event Summary
+## 💡 Detection Opportunities
+**PowerShell Detection Logic:**
+```powershell
+# Identify attempts to clear security logs
+Get-WinEvent -LogName "Microsoft-Windows-Sysmon/Operational" | 
+Where-Object {$_.Message -match "wevtutil.*cl.*Security"}
 
-A Sysmon Event ID 1 log captured execution of `wevtutil.exe` initiated by Microsoft Defender.
 
----
 
-# Key Fields Observed
 
-| Field | Value |
-|---|---|
-| Image | C:\Windows\System32\wevtutil.exe |
-| ParentImage | C:\ProgramData\Microsoft\Windows Defender\Platform\4.18.26040.7-0\MsMpEng.exe |
-| User | NT AUTHORITY\SYSTEM |
-| IntegrityLevel | System |
-| CommandLine | wevtutil.exe install-manifest ... |
-
----
-
-# Analysis
-
-## Process Executed
-
-`wevtutil.exe`
-
-Windows Event Utility used for:
-- event log management
-- manifest installation
-- log operations
-
----
-
-## Parent Process
-
-`MsMpEng.exe`
-
-This is the Microsoft Defender Antivirus engine.
-
-The parent-child relationship suggests legitimate Defender activity.
-
----
-
-## Privilege Level
-
-The process executed under:
-
-`NT AUTHORITY\SYSTEM`
-
-This indicates highest system-level privileges.
-
----
-
-# Security Relevance
-
-Although this event appears legitimate, `wevtutil.exe` is important from a SOC perspective because attackers may abuse it to:
-
-- clear event logs
-- tamper logging
-- remove evidence
-
-Example malicious usage:
-
-```cmd
-wevtutil cl Security
