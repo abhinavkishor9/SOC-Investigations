@@ -28,6 +28,8 @@ Lab research to baseline legitimate `wevtutil.exe` execution versus potential lo
 Get-WinEvent -LogName "Microsoft-Windows-Sysmon/Operational" | 
 Where-Object {$_.Message -match "wevtutil.*cl.*Security"}
 
+<img width="960" height="540" alt="image" src="https://github.com/user-attachments/assets/446ddeb4-2169-4940-9807-046497bab49b" />
+<img width="431" height="353" alt="image" src="https://github.com/user-attachments/assets/a91d629d-fe1e-413a-a0fa-ae2c66d9ffd3" />
 
 
 
