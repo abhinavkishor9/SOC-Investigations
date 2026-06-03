@@ -1,76 +1,24 @@
 # SOC-Investigations
 
-A hands-on cybersecurity repository focused on SOC analysis, Sysmon telemetry, Windows Event ID investigations, threat hunting, and detection engineering.
+This repository documents my hands-on experience in security operations, threat hunting, and detection engineering. Each investigation follows a structured methodology to analyze telemetry, identify threats, and implement effective detection logic.
 
-This repository documents practical investigations performed in a personal SOC lab environment using Windows VMs, Sysmon, Event Viewer, PowerShell, and security monitoring techniques.
+## 🛠 Skills & Methodologies
+* **Telemetry Analysis**: Expert in Windows Event Logs, Sysmon, and Registry analysis[cite: 1].
+* **Detection Engineering**: Creating custom Sigma rules and Splunk queries[cite: 1].
+* **Threat Hunting**: Identifying persistence, C2 activity, and credential access[cite: 1].
+* **MITRE ATT&CK**: Mapping investigations to specific adversary tactics and techniques[cite: 1].
 
----
+## 🔬 Lab Investigations
+| Lab # | Investigation Topic | MITRE Technique(s) | Status |
+| :--- | :--- | :--- | :--- |
+| 01 | Process Creation | T1059.001 | Completed |
+| 02 | Failed Login Analysis | T1110 | Completed |
+| 03 | Suspicious Service Creation | T1543.003 | Completed |
+| 04 | Registry Run Key Persistence | T1547.001 | Completed |
+| 05 | Network Connection Analysis | T1071, T1105, T1041 | Completed |
 
-# Objectives
-
-- Practice real-world SOC investigation workflows
-- Learn Windows and Sysmon telemetry analysis
-- Understand attacker techniques and detection opportunities
-- Build hands-on threat hunting and incident analysis skills
-- Create a professional cybersecurity portfolio
-
----
-
-# Lab Environment
-
-| Component | Details |
-|---|---|
-| Virtualization | VMware Workstation Player |
-| Operating System | Windows 10 VM |
-| Monitoring Tool | Sysmon |
-| Log Analysis Tool | Windows Event Viewer |
-| Shells Used | CMD, PowerShell |
-| Future Expansion | Wazuh SIEM, Sigma Rules |
+## 🎓 About
+This project serves as a practical implementation of the **"SOC Training Roadmap.pdf"**[cite: 1]. It reflects my commitment to building professional-grade analytical skills required for modern security operations centers[cite: 1].
 
 ---
-
-# Investigation Areas
-
-This repository will include investigations related to:
-
-- Sysmon Event ID Analysis
-- Windows Security Event Logs
-- Process Creation Monitoring
-- PowerShell Detection
-- Parent-Child Process Analysis
-- Failed Login Investigations
-- Persistence Detection
-- Threat Hunting
-- IOC Correlation
-- Detection Engineering
-
----
-
-# Current Investigations
-
-| Investigation | Status |
-|---|---|
-| Sysmon Event ID 1 — Process Creation Analysis | Completed |
-| Encoded PowerShell Detection | In Progress |
-| Failed Login Investigation (4625) | Planned |
-| Network Connection Analysis | Planned |
-| DNS Query Investigation | Planned |
-
----
-
-# Repository Structure
-
-```text
-SOC-Investigations/
-│
-├── Sysmon/
-│   ├── sysmon-eventid1-process-analysis.md
-│   ├── encoded-powershell-analysis.md
-│
-├── Windows-Event-Logs/
-│
-├── Threat-Hunting/
-│
-├── IOC-Reports/
-│
-└── Screenshots/
+*Created by Abhinav Kishor | 2026*
