@@ -1,29 +1,32 @@
-# Encoded PowerShell Detection Investigation
+# Failed Login Investigation — Windows Event ID 4625
 
 ## Objective
 
-The objective of this investigation was to detect and analyze suspicious PowerShell execution involving Base64-encoded commands using Sysmon telemetry and Windows Event Logs.
+The objective of this investigation was to analyze failed authentication attempts using Windows Security Event ID 4625 and identify potential brute-force or unauthorized login activity.
 
 This investigation focused on:
-- PowerShell abuse detection
-- command-line analysis
-- Base64 payload decoding
-- Sysmon Event ID 1 analysis
-- detection engineering
-- Sigma rule creation
+- failed login analysis
+- authentication telemetry
+- brute-force detection
+- logon type investigation
+- source IP analysis
+- SIEM correlation logic
+- SOC escalation workflow
 
 ---
 
 # Investigation Scenario
 
-Encoded PowerShell commands are commonly used by attackers to:
-- obfuscate malicious commands
-- evade detections
-- execute hidden payloads
-- download malware
-- establish persistence
+Failed login events are critical authentication-related telemetry frequently monitored by SOC analysts.
 
-This lab simulated suspicious encoded PowerShell execution in a controlled SOC lab environment.
+Repeated failed login attempts may indicate:
+- password guessing
+- brute-force attacks
+- credential stuffing
+- account enumeration
+- unauthorized access attempts
+
+This lab simulated failed authentication activity in a controlled SOC lab environment.
 
 ---
 
@@ -32,34 +35,35 @@ This lab simulated suspicious encoded PowerShell execution in a controlled SOC l
 | Component | Details |
 |---|---|
 | Operating System | Windows 10 VM |
-| Monitoring Tool | Sysmon |
-| Log Source | Microsoft-Windows-Sysmon/Operational |
-| Analysis Tools | Event Viewer, PowerShell |
+| Log Source | Windows Security Logs |
+| Event Viewer | Windows Event Viewer |
+| Investigation Type | Authentication Failure Analysis |
 | Virtualization | VMware Workstation |
-| Investigation Type | Process Creation Analysis |
 
 ---
 
 # Attack Simulation
 
-The following encoded PowerShell command was executed inside the lab VM:
+The following actions were performed:
+- workstation locked using `Windows + L`
+- incorrect password entered multiple times
+- repeated login failures generated
 
-```powershell
-powershell -enc ZQBjAGgAbwAgAGgAZQBsAGwAbwA=
+This created:
+```text id="4625md2"
+Windows Security Event ID 4625
 ```
 
 ---
 
 # Telemetry Generated
 
-The activity generated the following telemetry:
-
 | Telemetry Type | Description |
 |---|---|
-| Sysmon Event ID 1 | Process creation event |
-| PowerShell Execution | Encoded PowerShell activity |
-| Command-Line Logging | Encoded payload visibility |
-| Parent-Child Process Relationship | explorer.exe → powershell.exe |
+| Event ID 4625 | Failed login attempt |
+| Authentication Logs | Login failure telemetry |
+| Account Monitoring | Targeted user account visibility |
+| Logon Type Data | Local or remote login identification |
 
 ---
 
@@ -67,151 +71,133 @@ The activity generated the following telemetry:
 
 ## Log Location
 
-```text
-Applications and Services Logs
-→ Microsoft
-→ Windows
-→ Sysmon
-→ Operational
+```text id="4625md3"
+Windows Logs
+→ Security
 ```
 
 ---
 
-# Event ID Observed
+# Event ID Investigated
 
-```text
-Event ID 1 — Process Creation
+```text id="4625md4"
+Event ID 4625 — Failed Logon
 ```
 
 ---
 
 # Important Fields Identified
 
-| Field | Value |
+| Field | Purpose |
 |---|---|
-| Event ID | 1 |
-| Image | powershell.exe |
-| CommandLine | powershell -enc ZQBjAGgAbwAgAGgAZQBsAGwAbwA= |
-| ParentImage | explorer.exe |
-| User | Lab User |
-| IntegrityLevel | Medium |
+| Account Name | Targeted username |
+| Logon Type | Type of login attempt |
+| Source Network Address | Source IP address |
+| Failure Reason | Cause of login failure |
+| Workstation Name | Originating system |
+| Process Name | Authentication process |
 
 ---
 
-# Command-Line Analysis
+# Event Analysis
 
-Observed command:
+## Targeted Account
 
-```powershell
-powershell -enc ZQBjAGgAbwAgAGgAZQBsAGwAbwA=
-```
-
-## Suspicious Indicator
-
-The following argument was identified:
-
-```text
--enc
-```
-
-This indicates:
-```text
-EncodedCommand
-```
-
-Encoded PowerShell commands are heavily abused in:
-- phishing attacks
-- malware delivery
-- ransomware
-- remote command execution
-- defense evasion techniques
+The investigation identified repeated failed login attempts against the configured lab account.
 
 ---
 
-# Base64 Payload Analysis
+# Logon Type Analysis
 
-## Encoded Payload
+Observed Logon Type:
 
-```text
-ZQBjAGgAbwAgAGgAZQBsAGwAbwA=
+```text id="4625md5"
+7 — Unlock Workstation
 ```
 
 ---
 
-# Payload Decoding
+# Logon Type Reference
 
-The payload was decoded using:
-
-```powershell
-[System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String("ZQBjAGgAbwAgAGgAZQBsAGwAbwA="))
-```
-
----
-
-# Decoded Result
-
-```powershell
-echo hello
-```
+| Logon Type | Description |
+|---|---|
+| 2 | Interactive Local Login |
+| 3 | Network Login |
+| 7 | Unlock Workstation |
+| 10 | Remote Desktop Login |
 
 ---
 
-# Analyst Observations
+# Failure Reason Analysis
 
-The use of encoded PowerShell execution is considered suspicious because attackers frequently use Base64 encoding to:
-- hide malicious commands
-- bypass detections
-- evade security monitoring
-- execute obfuscated payloads
+Observed behavior:
+- incorrect password submission
+- authentication rejection
+- repeated login failures
 
-Although the decoded payload in this lab was benign, the execution pattern itself remains highly relevant from a SOC detection perspective.
-
----
-
-# Parent-Child Process Analysis
-
-## Process Relationship
-
-```text
-explorer.exe → powershell.exe
-```
-
-### Analysis
-
-The parent process:
-```text
-explorer.exe
-```
-
-indicates user-initiated execution from the desktop session.
-
-This behavior was expected within the controlled lab environment.
+Potential attacker objectives:
+- password guessing
+- credential brute force
+- unauthorized access attempts
 
 ---
 
 # Security Relevance
 
-Encoded PowerShell execution is associated with:
-- malware loaders
-- PowerShell download cradles
-- post-exploitation frameworks
-- red team tooling
-- ransomware execution chains
+Windows Event ID 4625 is highly valuable for:
+- brute-force detection
+- password spray analysis
+- account enumeration detection
+- authentication monitoring
+- SOC correlation rules
 
 SOC analysts frequently monitor:
-- `-enc`
-- `EncodedCommand`
-- `FromBase64String`
-- suspicious PowerShell child processes
+- repeated failures
+- multiple usernames
+- repeated source IPs
+- administrative account targeting
+- failed RDP authentication
 
 ---
 
-# MITRE ATT&CK Mapping
+# Investigation Workflow
 
-| Technique ID | Technique |
-|---|---|
-| T1059.001 | PowerShell |
-| T1027 | Obfuscated Files or Information |
+## Step 1 — Generate Failed Login Events
+
+The workstation was intentionally locked and incorrect passwords were entered multiple times.
+
+---
+
+# Step 2 — Filter Security Logs
+
+Security logs were filtered for:
+
+```text id="4625md6"
+Event ID 4625
+```
+
+---
+
+# Step 3 — Analyze Authentication Telemetry
+
+The following indicators were reviewed:
+- account name
+- logon type
+- failure reason
+- source system
+- authentication process
+
+---
+
+# Analyst Observations
+
+The failed login activity observed in this lab was generated intentionally for defensive security analysis.
+
+Although benign in this environment, repeated failed login attempts may indicate:
+- brute-force attacks
+- password spraying
+- unauthorized access attempts
+- compromised credentials
 
 ---
 
@@ -219,10 +205,10 @@ SOC analysts frequently monitor:
 
 | IOC Type | Value |
 |---|---|
-| Process | powershell.exe |
-| Suspicious Argument | -enc |
-| Encoded Payload | ZQBjAGgAbwAgAGgAZQBsAGwAbwA= |
-| Parent Process | explorer.exe |
+| Event ID | 4625 |
+| Activity Type | Failed Authentication |
+| Log Source | Windows Security Logs |
+| Suspicious Pattern | Repeated Login Failures |
 
 ---
 
@@ -230,11 +216,11 @@ SOC analysts frequently monitor:
 
 ## Detection Objective
 
-Detect PowerShell execution involving:
-- encoded commands
-- Base64 payloads
-- obfuscated command-line arguments
-- suspicious PowerShell activity
+Detect:
+- repeated failed logins
+- brute-force activity
+- password spray attempts
+- abnormal authentication failures
 
 ---
 
@@ -242,87 +228,115 @@ Detect PowerShell execution involving:
 
 | Detection Area | Logic |
 |---|---|
-| Process Creation | Sysmon Event ID 1 |
-| PowerShell Monitoring | powershell.exe execution |
-| Encoded Command Detection | `-enc` argument |
-| Payload Obfuscation | Base64 command usage |
+| Authentication Failures | Event ID 4625 |
+| Brute Force Detection | Multiple failures from same source |
+| Account Targeting | Repeated attempts against same user |
+| Time Correlation | High failure frequency within short timeframe |
 
 ---
 
-# Sigma Rule
+# Correlation Logic
 
-```yaml
-title: Encoded PowerShell Detection
-id: 9f6b1d8c-encoded-powershell-detection
-status: experimental
-description: Detects PowerShell execution using Base64 encoded commands.
-author: Abhinav Kishor
-date: 2026-05-27
-
-logsource:
-  product: windows
-  category: process_creation
-
-detection:
-  selection_img:
-    Image|endswith:
-      - '\powershell.exe'
-      - '\pwsh.exe'
-
-  selection_cmd:
-    CommandLine|contains:
-      - ' -enc '
-      - ' -EncodedCommand '
-      - 'FromBase64String'
-
-  condition: selection_img and selection_cmd
-
-fields:
-  - Image
-  - ParentImage
-  - CommandLine
-  - User
-  - IntegrityLevel
-
-falsepositives:
-  - Administrative automation scripts
-  - Legitimate encoded PowerShell usage
-
-level: high
-
-tags:
-  - attack.execution
-  - attack.t1059.001
-  - attack.defense_evasion
-  - attack.t1027
-```
+Potential brute-force indicators:
+- multiple failed logins
+- repeated authentication failures
+- repeated attempts from same IP
+- administrative account targeting
+- rapid login failure sequences
 
 ---
 
 # Splunk Detection Query
 
-```spl
-index=sysmon EventCode=1 Image="*powershell.exe"
-| search CommandLine="*-enc*"
-| table _time Computer User Image CommandLine ParentImage
+```spl id="4625md7"
+EventCode=4625
+| stats count by Account_Name Source_Network_Address
+| sort - count
 ```
+
+---
+
+# Brute Force Detection Query
+
+```spl id="4625md8"
+EventCode=4625
+| stats count by Source_Network_Address
+| where count > 5
+```
+
+---
+
+# Sigma Rule
+
+```yaml id="4625md9"
+title: Multiple Failed Login Attempts
+id: failed-login-4625-detection
+status: experimental
+description: Detects repeated failed login attempts that may indicate brute-force activity.
+author: Abhinav Kishor
+date: 2026-05-28
+
+logsource:
+  product: windows
+  service: security
+
+detection:
+  selection:
+    EventID: 4625
+
+  condition: selection
+
+fields:
+  - Account_Name
+  - Source_Network_Address
+  - Workstation_Name
+  - Logon_Type
+
+falsepositives:
+  - User password typos
+  - Expired credentials
+  - Forgotten passwords
+
+level: medium
+
+tags:
+  - attack.credential_access
+  - attack.t1110
+  - windows
+  - authentication
+  - brute_force
+```
+
+---
+
+# MITRE ATT&CK Mapping
+
+| Technique ID | Technique |
+|---|---|
+| T1110 | Brute Force |
+| T1078 | Valid Accounts |
 
 ---
 
 # Escalation Severity
 
-| Severity | Reason |
+| Scenario | Severity |
 |---|---|
-| High | Encoded PowerShell is commonly associated with malicious activity and command obfuscation |
+| Single Failed Login | Low |
+| Multiple Failed Logins | Medium |
+| Repeated Admin Account Targeting | High |
+| External RDP Brute Force | Critical |
 
 ---
 
 # False Positive Considerations
 
-Potential legitimate cases may include:
-- administrative automation
-- software deployment scripts
-- enterprise management tools
+Potential legitimate causes:
+- incorrect password entry
+- expired passwords
+- forgotten credentials
+- keyboard layout issues
+- account lockout behavior
 
 Analyst validation is required before escalation.
 
@@ -332,50 +346,51 @@ Analyst validation is required before escalation.
 
 If malicious activity is confirmed:
 
-- isolate endpoint from network
-- terminate suspicious PowerShell process
-- preserve event logs
-- investigate persistence mechanisms
-- review outbound connections
-- collect forensic artifacts
+- block suspicious source IP
+- disable compromised accounts
+- enforce MFA
+- reset affected credentials
+- review authentication logs
+- investigate lateral movement
+- monitor for persistence activity
 
 ---
 
 # Investigation Outcome
 
-The investigation successfully detected encoded PowerShell execution using Sysmon Event ID 1 telemetry.
+The investigation successfully identified and analyzed Windows Event ID 4625 failed login telemetry.
 
-The activity demonstrated:
-- command-line visibility
-- Base64 payload identification
-- PowerShell threat hunting workflow
-- detection engineering opportunities
+The lab demonstrated:
+- authentication monitoring
+- failed login analysis
+- brute-force detection logic
+- SIEM correlation opportunities
+- SOC investigation methodology
 
 ---
 
 # Key Learnings
 
 This investigation improved understanding of:
-- Sysmon process creation logs
-- PowerShell threat hunting
-- Base64 payload decoding
-- command-line analysis
-- MITRE ATT&CK mapping
-- detection engineering
-- Sigma rule development
-- SOC investigation workflow
+- Windows authentication telemetry
+- failed login investigations
+- brute-force detection
+- SIEM correlation logic
+- Event ID 4625 analysis
+- SOC escalation workflow
+- authentication threat hunting
 
 ---
 
 # Future Improvements
 
-Future enhancements planned for this investigation:
+Planned enhancements:
 - Splunk dashboard integration
-- Wazuh alert generation
-- PowerShell logging correlation
-- Event ID correlation analysis
+- Wazuh authentication alerts
+- failed login timeline analysis
+- source IP correlation
+- account lockout monitoring
 - screenshot documentation
-- IOC timeline creation
+- brute-force threshold tuning
 
 ---
-
